@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Image Search</title>
+      <style>
+        #container {
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        #search-bar {
+          flex: 9;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        #search-bar > * {
+          margin: 1em;
+        }
+        ul {
+          display: flex;
+          justify-content: space-around;
+        }
+        li {
+          list-style-type: none;
+        }
+        a {
+          text-decoration: none;
+          color: black;
+        }
+        input[type=text] {
+           border: none;
+           box-shadow: 0px 0px 1px rgb(0,0,0,0.6) inset;
+           width: 30%;
+           padding: 0.6em;
+           border-radius: 2em;           
+        }
+        input[type=text]:hover {
+           border: none;
+           box-shadow: 0px 0px 4px grey;
+        }
+        
+        button {
+          width: 30%;
+          padding: 0.5em;
+          margin: 0 1em;
+          border: 0;
+          border-radius: 0.9em;  
+        }
+        #bttn {
+          display: flex;
+          justify-content: center;
+      
+          width: 40%;
+        }
+        button:hover {
+           box-shadow: 0px 0px 4px grey;
+        }
+      </style>
+    </head>
+    <body>
+        <div id="container">
+       <ul id="navbar"> 
+          <li><a href="./index.html">Google Search</a></li>
+          <li><a href="./imageSearch.html">Image Search</a></li>
+          <li><a href="./advanced.html">Advanced Search</a></li>
+        </ul>
+        <form id="search-bar" action="https://google.com/search-bar">
+            <input type="text" name="q" />
+            <div id="bttn">
+            <button type="submit" name="tbm" value="isch">Image Search</button>
+            <button type="submit" name="btnI">I'm Feeling Lucky</button>
+          </div>
+          </form>
+        </div>
+
+    </body>
+</html>
