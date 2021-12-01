@@ -3,6 +3,16 @@
     <head>
         <title>Image Search</title>
       <style>
+        * {
+          font-family: sans-serif;
+          margin: 0;
+        }
+        #navbar {
+          background-color: #4285F4;
+          margin:0;
+          padding: 1.5em;
+          font-weight: bold;
+        }
         #container {
           height: 100vh;
           display: flex;
@@ -62,17 +72,17 @@
     </head>
     <body>
         <div id="container">
-       <ul id="navbar"> 
-          <li><a href="./index.html">Google Search</a></li>
-          <li><a href="./imageSearch.html">Image Search</a></li>
-          <li><a href="./advanced.html">Advanced Search</a></li>
-        </ul>
-        <form id="search-bar" action="https://google.com/search-bar">
+          <ul id="navbar"> 
+            <li><a href="./index.html">Google Search</a></li>
+            <li><a href="./imageSearch.html">Google Image Search</a></li>
+            <li><a href="./advanced.html">Google Advanced Search</a></li>
+          </ul>
+          <form id="search-bar" action="https://google.com/search">
             <input type="text" name="q" />
             <div id="bttn">
-            <button type="submit" name="tbm" value="isch">Image Search</button>
-            <button type="submit" name="btnI">I'm Feeling Lucky</button>
-          </div>
+              <button type="submit" name="tbm" value="isch">Image Search</button>
+              <button type="submit" name="btnI">I'm Feeling Lucky</button>
+            </div>
           </form>
         </div>
 
