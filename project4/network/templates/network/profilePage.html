@@ -1,0 +1,28 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h2>Profile Name: {{userObj.username}}</h2>
+    {% if user.is_authenticated %}
+        {% if user.id != userObj.id %}
+        <form method="post">
+            {% csrf_token %}
+            <input class="btn btn-primary" type="submit" name="follow" 
+            value="{%if followStatus%} Unfollow 
+            {%else%}Follow {%endif%}">
+        </form>
+        {%endif%}
+    {%endif%}
+    <p>Followers: {{userObj.followers.all|length}}</p>
+    <p>Following: {{userObj.following.all|length}}</p>
+    <div id="userPosts">
+       <strong>
+           <h3>User <em>{{userObj.username}}</em> Posts Wall</h3>
+        {%for post in ownPostList reversed%}
+            <div class="postContent">
+                {{post.postContent}}<br>
+                {{post.postDate}}
+            </div>
+        {%endfor%}
+    </strong>
+    </div>
+{% endblock %}

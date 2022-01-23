@@ -1,0 +1,25 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div id="newPost-section">
+        <h2>New Post</h2>    
+        {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            <textarea class="form-control" name="newPostText"></textarea>
+            <input class="btn btn-primary" type="submit" value="Post">
+        </form>
+    </div>
+    <div id="allPost">
+        {% for post in allPosts reversed%}
+        <div class="postContent">
+            <a href="{% url 'index' %}{{post.postedBy.id}}">
+                <h3>{{post.postedBy}}</h3>
+            </a>
+            <p>{{post.postDate}}</p>
+            <p>{{post.postContent}}</p>
+        </div>
+        {%endfor%}
+    </div>
+    {%endif%}
+{% endblock %}

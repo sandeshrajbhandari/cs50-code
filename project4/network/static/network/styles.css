@@ -1,0 +1,10 @@
+body {
+    margin: 1% 4%;
+}
+
+.postContent {
+    padding: 0.7em 0.5em;
+    margin: 0.7em 0.5em;
+    border-radius: 0.7em;
+    background-color: beige;
+}
