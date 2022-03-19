@@ -5,18 +5,41 @@ from django.shortcuts import render
 from django.urls import reverse
 import json
 from django.contrib.auth.models import AbstractUser
+from django.core.paginator import Paginator #for displaying only 10 posts per page. 
 
 from .models import User, Post
 
 def index(request):
+    if request.user.is_authenticated:
+        print("User is logged in "+ request.user.username)
+    else:
+        return HttpResponseRedirect(reverse("login")) #redirect to login page if not logged in. 
     if request.method == "POST":
         poster = User.objects.get(username = request.user.username)
         p = Post(postContent = request.POST["newPostText"], postedBy = poster)
         p.save()
+    # code for edit Post. 
+    if request.method == "PUT":
+        editor = User.objects.get(username = request.user.username)
+        bodyData = json.loads(request.body)
+        bodyPostId=bodyData["postId"]
+        editingPost = Post.objects.get(id=bodyPostId)
+        postAuthor = editingPost.postedBy
+        if editor == postAuthor:
+            print ("edited to: "+ bodyData["newPostText"])
+            editingPost.postContent = bodyData["newPostText"]
+            print ("Changed  : " + editingPost.postContent)
+            editingPost.save()
 
+    #paginator code, boilerplate modify.
+    post_list = Post.objects.all().order_by('-postDate') 
+    #to change order by postDate, '-' in -postDate for reversed.
+    paginator = Paginator(post_list, 10) # Show 10 posts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "network/index.html", {
-        "allPosts": Post.objects.all()
+        "page_obj": page_obj
     })
 
 
@@ -90,7 +113,7 @@ def profilePage(request,userId):
             loggedUser.following.add(profileUser)
         loggedUser.save()
         return HttpResponseRedirect(reverse( "profilePage",args=(userId) )) 
-
+    
     return render(request, "network/profilePage.html", {
         "userObj": profileUser,
         "ownPostList": profileUser.ownPosts.all(),

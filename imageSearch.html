@@ -1,90 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Image Search</title>
-      <style>
-        * {
-          font-family: sans-serif;
-          margin: 0;
-        }
-        #navbar {
-          background-color: #4285F4;
-          margin:0;
-          padding: 1.5em;
-          font-weight: bold;
-        }
-        #container {
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-        }
-        #search-bar {
-          flex: 9;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-        #search-bar > * {
-          margin: 1em;
-        }
-        ul {
-          display: flex;
-          justify-content: space-around;
-        }
-        li {
-          list-style-type: none;
-        }
-        a {
-          text-decoration: none;
-          color: black;
-        }
-        input[type=text] {
-           border: none;
-           box-shadow: 0px 0px 1px rgb(0,0,0,0.6) inset;
-           width: 30%;
-           padding: 0.6em;
-           border-radius: 2em;           
-        }
-        input[type=text]:hover {
-           border: none;
-           box-shadow: 0px 0px 4px grey;
-        }
-        
-        button {
-          width: 30%;
-          padding: 0.5em;
-          margin: 0 1em;
-          border: 0;
-          border-radius: 0.9em;  
-        }
-        #bttn {
-          display: flex;
-          justify-content: center;
-      
-          width: 40%;
-        }
-        button:hover {
-           box-shadow: 0px 0px 4px grey;
-        }
-      </style>
-    </head>
-    <body>
-        <div id="container">
-          <ul id="navbar"> 
-            <li><a href="./index.html">Google Search</a></li>
-            <li><a href="./imageSearch.html">Google Image Search</a></li>
-            <li><a href="./advanced.html">Google Advanced Search</a></li>
-          </ul>
-          <form id="search-bar" action="https://google.com/search">
-            <input type="text" name="q" />
-            <div id="bttn">
-              <button type="submit" name="tbm" value="isch">Image Search</button>
-              <button type="submit" name="btnI">I'm Feeling Lucky</button>
-            </div>
-          </form>
-        </div>
+url add add
+in tasks/views.py
+ 
+def add(request): 
+  return render(request, "tasks/add.html"
+add.html copy paste index.html  
+<h1>add task</h1>
+<form> 
+  <input type="text" name="task">
+  <input type="submit">
+</form>
 
-    </body>
-</html>
+has similar pages.
+use page inheritance in Django. 
+add.html and index.html difference is only body tag. 
+
+add a layout.html ///////////LAAAYYOOOOUUUTTTTT file 
+basic syntax.
+  <body>
+    {% block body %}
+    {% endblock %}
+  </body>
+
+now in index.html delete everything except ul part.
+
+{% extends "tasks/layout.html" %}
+{% block body %}
+  <ul>
+      //////////
+  </ul>
+{% endblock %}
+
+do same for add.html //simplify.
+
+add add link
+must use href="tasks/add"
+instead use dynamic links if the link changes in future.
+<a href="{% url 'add' %}">Add new Task</a>
+url is from the urls.py path(.... , ...., name='add') for the required page. 
+
+NAMESPACE COLLISION
+tasks url also has index name
+and newear also had index name in local url. 
+in tasks/urls.py - app_name = "tasks"
+in add.html - use {% url 'tasks:index' %}
+
+Form Action
+<form action="{% url 'tasks:add' %}" method="POST">
+CSRF(cross site request forgery) request error. 
+request forge vulnerability. 
+add a CSRF token. 
+
+CSRF validation enabled by default using Django Middleware
+inside settings.py, see MIDDLEWAR = [] contains CSRF validation. 
+
+<form action .........>
+{%csrf_token%} //addds a <input type="hidden" name="csrftoken" value="sadjlkadjg" >
+<input........
+
+quick way of adding forms/create data
+in views.py
+from django import forms
+
+class NewTaskForm(froms.Form): 
+  task = forms.CharField(label="New Task")
+  priority =  forms.IntegerField(label="Priority", min_value=1, max_value=100 _)
+in def add(request): 
+  return ............... , {
+    "form": NewTaskForm()
+}
+in add.html {{form}} instead of form tag. 
+
+add server side validation aside from client side validation.
+
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
+inside def add(request):
+  if request.method == "POST":
+    form = NewTaskForm(request.POST)
+    if form.is_valid():
+      task = form.cleaned_data["task"]
+      tasks.append(task) //add to the task list
+      return HttpResponseRedirect(reverse("tasks:index"))
+    else: 
+      return render(request, "tasks/add.html", {
+      "form": form //send filled form data if error
+    })
+
+REdirect to task page after add task submit
+
+stores task in a global variable called task. same for all users/addrsses
+
+SESSIONS
+personal task list and remembers who you are.
+
+tasks/views.py
+def index(request):
+  if "tasks" not in request.session:
+    request.session["tasks"] = [] //if not tasks create.
+
+  return render ......... , {
+    "tasks": request.session["tasks"]
+  })
+  ERROR: not table django_session : soln=> python manage.py migrate
+  creates the table and give django access to that table. (migrate to a database)
+  python manage.py runserver
+
+  add no stasks in tasks/index.html
+  after {% for...... %}
+      <li>.....
+    {% empty %}
+      <li> No tasks</li>
+    ........
+
+  then modify add(request)
+  if form.is_valid():
+      task = form.cleaned_data["task"]
+      #tasks.append(task) //add to the task list
+      request.session["tasks"] += [task]

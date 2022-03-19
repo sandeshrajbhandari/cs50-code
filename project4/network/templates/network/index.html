@@ -1,25 +1,44 @@
-{% extends "network/layout.html" %}
+{% extends "network/layout.html" %} {% block body %}
+<div id="newPost-section">
+  <h2>New Post</h2>
+  {% if user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    <textarea class="form-control" name="newPostText"></textarea>
+    <input class="btn btn-primary" type="submit" value="Post" />
+  </form>
+</div>
+<div id="allPost">
+  {% for post in page_obj %}
+  <div class="postDiv" data-postid="{{post.id}}">
+    <a href="{% url 'index' %}{{post.postedBy.id}}">
+      <h3>{{post.postedBy}}</h3>
+    </a>
+    <p>{{post.postDate}}</p>
+    {% csrf_token %}
+    <div class="postContent">{{post.postContent}}</div>
+    {% if user.is_authenticated %} {% if user.id == post.postedBy.id %}
+    <button class="editBtn">Edit Post</button>
+    {%endif%} {%endif%}
+  </div>
+  {%endfor%}
 
-{% block body %}
-    <div id="newPost-section">
-        <h2>New Post</h2>    
-        {% if user.is_authenticated %}
-        <form method="post">
-            {% csrf_token %}
-            <textarea class="form-control" name="newPostText"></textarea>
-            <input class="btn btn-primary" type="submit" value="Post">
-        </form>
-    </div>
-    <div id="allPost">
-        {% for post in allPosts reversed%}
-        <div class="postContent">
-            <a href="{% url 'index' %}{{post.postedBy.id}}">
-                <h3>{{post.postedBy}}</h3>
-            </a>
-            <p>{{post.postDate}}</p>
-            <p>{{post.postContent}}</p>
-        </div>
-        {%endfor%}
-    </div>
-    {%endif%}
-{% endblock %}
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+      <a href="?page=1">&laquo; first</a>
+      <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}">next</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+</div>
+{%endif%} {% endblock %}
